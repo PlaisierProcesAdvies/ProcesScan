@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>De Processcan | Plaisier Proces & Advies</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script>emailjs.init("eV8chyVKUox2d4cP2");</script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: #111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 20px;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .wrap { width: 100%; max-width: 520px; }
+
+    .header { text-align: center; margin-bottom: 30px; }
+    .header-label {
+      font-size: 11px;
+      letter-spacing: 3.5px;
+      color: #f97316;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .header-titel {
+      font-family: 'Lora', serif;
+      font-size: 22px;
+      font-weight: 400;
+      color: #efefef;
+    }
+
+    .voortgang-balk {
+      height: 2px;
+      background: #1e1e1e;
+      border-radius: 2px;
+      margin-bottom: 26px;
+      overflow: hidden;
+    }
+    .voortgang-vul {
+      height: 100%;
+      background: #f97316;
+      border-radius: 2px;
+      transition: width 0.4s ease;
+      width: 0%;
+    }
+
+    .kaart {
+      background: #191919;
+      border-radius: 14px;
+      padding: 36px 32px;
+      border: 1px solid #252525;
+      transition: opacity 0.16s ease, transform 0.16s ease;
+    }
+    .kaart.vervaag { opacity: 0; transform: translateY(8px); }
+
+    .vraag-titel {
+      font-family: 'Lora', serif;
+      font-size: 20px;
+      font-weight: 400;
+      color: #efefef;
+      line-height: 1.5;
+      margin-bottom: 26px;
+    }
+
+    .optie {
+      display: block;
+      width: 100%;
+      background: transparent;
+      border: 1px solid #272727;
+      border-radius: 8px;
+      padding: 14px 18px;
+      color: #bbb;
+      font-size: 15px;
+      font-family: 'DM Sans', sans-serif;
+      text-align: left;
+      cursor: pointer;
+      line-height: 1.45;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+      margin-bottom: 9px;
+    }
+    .optie:last-of-type { margin-bottom: 0; }
+    .optie:hover { border-color: #f97316; color: #fff; background: #1d1d1d; }
+
+    .terug-knop {
+      background: none;
+      border: none;
+      color: #3a3a3a;
+      font-size: 12px;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      margin-top: 20px;
+      text-decoration: underline;
+      padding: 0;
+      display: none;
+    }
+
+    .streep { width: 30px; height: 3px; border-radius: 2px; margin-bottom: 22px; }
+
+    .uitkomst-titel {
+      font-family: 'Lora', serif;
+      font-size: 21px;
+      font-weight: 400;
+      color: #efefef;
+      line-height: 1.4;
+      margin-bottom: 16px;
+    }
+    .uitkomst-tekst {
+      font-size: 15px;
+      color: #888;
+      line-height: 1.75;
+    }
+
+    .naam-veld-wrap { margin-top: 28px; }
+    .naam-label {
+      display: block;
+      font-size: 12px;
+      color: #555;
+      font-family: 'DM Sans', sans-serif;
+      margin-bottom: 8px;
+    }
+    .naam-input {
+      width: 100%;
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: #efefef;
+      font-size: 15px;
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+      transition: border-color 0.15s;
+      margin-bottom: 12px;
+    }
+    .naam-input:focus { border-color: #f97316; }
+    .naam-input::placeholder { color: #444; }
+
+    .cta-knop {
+      display: block;
+      background: #f97316;
+      color: #fff;
+      padding: 14px 24px;
+      border-radius: 7px;
+      text-decoration: none;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      text-align: center;
+      width: 100%;
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .cta-knop:hover { background: #e8670a; transform: translateY(-1px); }
+
+    .cta-link {
+      color: #f97316;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .opnieuw-knop {
+      background: none;
+      border: none;
+      color: #333;
+      font-size: 12px;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      margin-top: 14px;
+      text-decoration: underline;
+      padding: 0;
+      display: block;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 22px;
+      font-size: 11px;
+      color: #282828;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 480px) {
+      .kaart { padding: 28px 22px; }
+      .vraag-titel { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="header">
+    <div class="header-label">Plaisier Proces &amp; Advies</div>
+    <div class="header-titel">De Processcan</div>
+  </div>
+
+  <div class="voortgang-balk" id="voortgang-balk">
+    <div class="voortgang-vul" id="voortgang-vul"></div>
+  </div>
+
+  <div class="kaart" id="kaart">
+    <div id="inhoud"></div>
+  </div>
+
+  <div class="footer">plaisieradvies.nl</div>
+</div>
+
+<script>
+  const AANBOD_URL = 'https://www.plaisieradvies.nl/aanbod';
+  const CONTACT_URL = 'https://www.plaisieradvies.nl/contact';
+
+  const vragen = {
+    start: {
+      vraag: "Lig je wel eens wakker om je bedrijf?",
+      subtitel: null,
+      opties: [
+        { tekst: "Ja, en ik weet ook waarom", volgende: "a1" },
+        { tekst: "Ja, maar ik kan het niet goed benoemen", volgende: "b1" },
+        { tekst: "Nee, eigenlijk niet", volgende: "einde_nee" },
+      ],
+    },
+
+    // PAD A
+    a1: {
+      vraag: "Waar gaat het over?",
+      subtitel: null,
+      opties: [
+        { tekst: "Iets wat er aankomt, een investering of grote verandering", volgende: "a2_investering" },
+        { tekst: "Mijn mensen: hun betrokkenheid neemt af, het verloop neemt toe, uitval of alles bij elkaar", volgende: "a2_mensen" },
+        { tekst: "Ik wil groei realiseren maar loop nog vast", volgende: "einde_groei" },
+      ],
+    },
+
+    // Route investering
+    a2_investering: {
+      vraag: "Weet je team wat jij weet?",
+      subtitel: null,
+      opties: [
+        { tekst: "Ja, iedereen heeft hetzelfde beeld", volgende: "a3_investering" },
+        { tekst: "Deels, niet iedereen heeft het volledige beeld", volgende: "a3_investering" },
+        { tekst: "Nee, of ik weet het eerlijk gezegd niet zeker", volgende: "a3_investering" },
+      ],
+    },
+    a3_investering: {
+      vraag: "Handelt je team ook zoals jij zou handelen?",
+      subtitel: null,
+      opties: [
+        { tekst: "Ja, we trekken dezelfde conclusies", volgende: "einde_investering_ok" },
+        { tekst: "Niet altijd, er zit verschil in hoe mensen beslissen", volgende: "einde_investering_deels" },
+        { tekst: "Nee, of ik weet het eigenlijk niet", volgende: "einde_investering_nee" },
+      ],
+    },
+
+    // Route mensen
+    a2_mensen: {
+      vraag: "Hoe uit zich dat het meest?",
+      subtitel: null,
+      opties: [
+        { tekst: "Veel uitval of verzuim", volgende: "einde_mensen_uitval" },
+        { tekst: "Mensen vertrekken, verloop neemt toe", volgende: "einde_mensen_verloop" },
+        { tekst: "Ze doen hun werk maar de betrokkenheid is weg", volgende: "einde_mensen_betrokkenheid" },
+      ],
+    },
+
+    // PAD B
+    b1: {
+      vraag: "Hoe lang speelt dit al?",
+      subtitel: null,
+      opties: [
+        { tekst: "Een paar weken", volgende: "b2", tijdsduur: "weken" },
+        { tekst: "Een paar maanden", volgende: "b2", tijdsduur: "maanden" },
+        { tekst: "Langer, het is gewoon zo gegroeid", volgende: "b2", tijdsduur: "langer" },
+      ],
+    },
+    b2: {
+      vraag: "Wat houdt je het meest bezig?",
+      subtitel: null,
+      opties: [
+        { tekst: "Ik maak me zorgen maar weet niet waarover", volgende: "einde_b_zorgen" },
+        { tekst: "Er komt een grote beslissing aan en ik twijfel", volgende: "einde_b_beslissing" },
+        { tekst: "Ik heb geïnvesteerd maar zie het gewenste resultaat niet", volgende: "einde_b_investering" },
+      ],
+    },
+  };
+
+  const uitkomsten = {
+    einde_nee: {
+      kleur: "#4ade80",
+      titel: "Je ligt er niet wakker van. Maar je deed de scan wel.",
+      tekst: "Waarom?",
+      linkTekst: "Plan een eerste gesprek",
+      linkUrl: CONTACT_URL,
+      cta: true,
+      ctaUrl: CONTACT_URL,
+      ctaTekst: "Plan een eerste gesprek",
+      route: "Pad – Nee, eigenlijk niet",
+    },
+    einde_groei: {
+      kleur: "#f97316",
+      titel: "Je weet waar je naartoe wil. Maar je loopt vast.",
+      tekst: "Dat betekent dat er iets in de weg zit wat je nog niet ziet.\n\nDat is precies waar ik naar kijk.",
+      cta: true,
+      ctaUrl: AANBOD_URL,
+      ctaTekst: "Bekijk de Procesdiagnose",
+      route: "Pad A – Groei realiseren",
+    },
+    einde_investering_ok: {
+      kleur: "#f97316",
+      titel: "Je ziet het aankomen. Je team ook.",
+      tekst: "Maar zien is niet hetzelfde als handelen.\n\nDat breng ik in kaart.",
+      cta: true,
+      ctaUrl: AANBOD_URL,
+      ctaTekst: "Bekijk de Procesdiagnose",
+      route: "Pad A – Investering, team op één lijn",
+    },
+    einde_investering_deels: {
+      kleur: "#f97316",
+      titel: "Je ziet het aankomen. Je team niet helemaal.",
+      tekst: "Er zit verschil in hoe mensen beslissen. Dat is risicovol bij een grote verandering. Niet omdat mensen het verkeerd doen, maar omdat ze op andere informatie sturen.\n\nDat breng ik in kaart.",
+      cta: true,
+      ctaUrl: AANBOD_URL,
+      ctaTekst: "Bekijk de Procesanalyse",
+      route: "Pad A – Investering, team deels op één lijn",
+    },
+    einde_investering_nee: {
+      kleur: "#ef4444",
+      titel: "Er komt iets aan. Maar niet iedereen heeft hetzelfde beeld.",
+      tekst: "Dat betekent dat beslissingen worden genomen op basis van aannames.\n\nDit vraagt een gesprek.",
+      cta: true,
+      ctaUrl: CONTACT_URL,
+      ctaTekst: "Neem contact op",
+      route: "Pad A – Investering, team niet op één lijn",
+    },
+    einde_mensen_uitval: {
+      kleur: "#ef4444",
+      titel: "Als mensen uitvallen, zit er altijd iets onder.",
+      tekst: "Verzuim is zelden het echte probleem.\n\nHet is een signaal. Wat er onder zit is niet altijd zichtbaar. Dat is precies waar ik naar kijk.",
+      cta: true,
+      ctaUrl: CONTACT_URL,
+      ctaTekst: "Neem contact op",
+      route: "Pad A – Mensen, uitval",
+    },
+    einde_mensen_verloop: {
+      kleur: "#ef4444",
+      titel: "Als mensen weggaan, nemen ze meer mee dan je denkt.",
+      tekst: "De vraag is niet hoe je mensen vasthoudt.\n\nMaar waarom ze weggaan. Dat antwoord zit zelden in een exitgesprek.\n\nIk kijk waar het proces en de samenwerking onder druk staan.",
+      cta: true,
+      ctaUrl: AANBOD_URL,
+      ctaTekst: "Bekijk de Procesanalyse",
+      route: "Pad A – Mensen, verloop",
+    },
+    einde_mensen_betrokkenheid: {
+      kleur: "#f97316",
+      titel: "Ze zijn er wel, maar niet echt meer.",
+      tekst: "Mensen die van 9 tot 5 werken en verder niks doen zijn niet lui.\n\nZe hebben ergens afgehaakt. Dat heeft bijna altijd een oorzaak in hoe het werk georganiseerd is. Niet in wie ze zijn.\n\nDat breng ik in kaart.",
+      cta: true,
+      ctaUrl: AANBOD_URL,
+      ctaTekst: "Bekijk de Procesanalyse",
+      route: "Pad A – Mensen, betrokkenheid",
+    },
+  };
+
+  // Pad B uitkomsten per tijdsduur
+  const uitkomstenB = {
+    einde_b_zorgen: {
+      weken: {
+        kleur: "#f97316",
+        titel: "Je voelt het al. Maar het is nog vaag.",
+        tekst: "Dat is juist het moment om te kijken.\n\nNiet wachten tot het duidelijker wordt. Dan ben je verder van huis.",
+        cta: true, ctaUrl: AANBOD_URL, ctaTekst: "Bekijk de Procesdiagnose",
+        route: "Pad B – Zorgen, paar weken",
+      },
+      maanden: {
+        kleur: "#f97316",
+        titel: "Je loopt al een tijdje met dit gevoel.",
+        tekst: "Het wordt niet vanzelf duidelijker.\n\nDat betekent dat de oorzaak dieper zit dan je op het eerste gezicht ziet. Dat is precies waar ik naar kijk.",
+        cta: true, ctaUrl: AANBOD_URL, ctaTekst: "Bekijk de Procesanalyse",
+        route: "Pad B – Zorgen, paar maanden",
+      },
+      langer: {
+        kleur: "#ef4444",
+        titel: "Dit sluimert al lang genoeg.",
+        tekst: "Het heeft zich ondertussen waarschijnlijk door meerdere lagen heen gewerkt.\n\nDit vraagt een gesprek.",
+        cta: true, ctaUrl: CONTACT_URL, ctaTekst: "Neem contact op",
+        route: "Pad B – Zorgen, langer",
+      },
+    },
+    einde_b_beslissing: {
+      weken: {
+        kleur: "#f97316",
+        titel: "Je hebt nog tijd.",
+        tekst: "Maar twijfel voor een grote beslissing is een signaal.\n\nJe hebt nog niet scherp wat je nodig hebt om die beslissing goed te nemen. Dat kunnen we snel rechtzetten.",
+        cta: true, ctaUrl: AANBOD_URL, ctaTekst: "Bekijk de Procesdiagnose",
+        route: "Pad B – Beslissing, paar weken",
+      },
+      maanden: {
+        kleur: "#f97316",
+        titel: "Een grote beslissing die al maanden boven de markt hangt kost energie.",
+        tekst: "En hoe langer je wacht, hoe groter de druk.\n\nLaten we kijken wat er nodig is om die knoop door te hakken.",
+        cta: true, ctaUrl: AANBOD_URL, ctaTekst: "Bekijk de Procesanalyse",
+        route: "Pad B – Beslissing, paar maanden",
+      },
+      langer: {
+        kleur: "#ef4444",
+        titel: "Als een beslissing al lang uitgesteld wordt, is er meestal een reden.",
+        tekst: "En die gaat verder dan twijfel alleen.\n\nDat verdient een eerlijk gesprek.",
+        cta: true, ctaUrl: CONTACT_URL, ctaTekst: "Neem contact op",
+        route: "Pad B – Beslissing, langer",
+      },
+    },
+    einde_b_investering: {
+      weken: {
+        kleur: "#f97316",
+        titel: "Het is nog vroeg. Maar het gevoel klopt al niet.",
+        tekst: "Dat is een goed moment om te checken of je op de juiste plek zoekt.\n\nVoor je verder investeert.",
+        cta: true, ctaUrl: AANBOD_URL, ctaTekst: "Bekijk de Procesdiagnose",
+        route: "Pad B – Investering, paar weken",
+      },
+      maanden: {
+        kleur: "#f97316",
+        titel: "Je hebt geïnvesteerd. Het levert niet op wat je verwacht had.",
+        tekst: "De vraag is niet of je meer moet doen.\n\nMaar of je op de juiste plek zoekt. Dat breng ik scherp in kaart.",
+        cta: true, ctaUrl: AANBOD_URL, ctaTekst: "Bekijk de Procesanalyse",
+        route: "Pad B – Investering, paar maanden",
+      },
+      langer: {
+        kleur: "#ef4444",
+        titel: "Lang geïnvesteerd zonder het gewenste resultaat.",
+        tekst: "De oorzaak ligt zelden waar je denkt.\n\nDit vraagt een grondige blik, geen snelle oplossing.",
+        cta: true, ctaUrl: CONTACT_URL, ctaTekst: "Neem contact op",
+        route: "Pad B – Investering, langer",
+      },
+    },
+  };
+
+  const TOTAAL = 4;
+  let huidig = "start";
+  let geschiedenis = [];
+  let stap = 0;
+  let tijdsduur = null;
+
+  const kaart = document.getElementById("kaart");
+  const inhoud = document.getElementById("inhoud");
+  const voortgangVul = document.getElementById("voortgang-vul");
+  const voortgangBalk = document.getElementById("voortgang-balk");
+
+  function ctaKlik(url, route, titel) {
+    const naam = document.getElementById("naam-input")?.value || "niet ingevuld";
+    emailjs.send("service_qrt788c", "template_07nyhhf", {
+      naam: naam,
+      route: route,
+      uitkomst_titel: titel,
+      tijdstip: new Date().toLocaleString("nl-NL"),
+    }).catch(() => {});
+    window.open(url, "_blank");
+  }
+
+  function toonVraag(id) {
+    const v = vragen[id];
+    if (!v) return;
+
+    inhoud.innerHTML = `
+      <h2 class="vraag-titel">${v.vraag}</h2>
+      <div>
+        ${v.opties.map((opt, i) =>
+          `<button class="optie" onclick="ga('${opt.volgende}'${opt.tijdsduur ? `,'${opt.tijdsduur}'` : ''})">${opt.tekst}</button>`
+        ).join("")}
+      </div>
+      <button class="terug-knop" id="terug-knop" onclick="terug()" style="display:${geschiedenis.length > 0 ? 'block' : 'none'}">Vorige vraag</button>
+    `;
+
+    voortgangBalk.style.display = "block";
+    voortgangVul.style.width = (stap / TOTAAL * 100) + "%";
+    kaart.style.borderColor = "#252525";
+  }
+
+  function toonUitkomst(u) {
+    voortgangBalk.style.display = "none";
+    kaart.style.borderColor = u.kleur + "33";
+
+    const tekstHtml = u.tekst.replace(/\n\n/g, '<br><br>');
+
+    const safeRoute = (u.route || '').replace(/'/g, "\\'");
+    const safeTitel = u.titel.replace(/'/g, "\\'");
+    const safeUrl = u.ctaUrl || '';
+
+    const ctaHtml = u.cta ? `
+      <div class="naam-veld-wrap">
+        <label class="naam-label" for="naam-input">Hoe heet je? (optioneel)</label>
+        <input class="naam-input" id="naam-input" type="text" placeholder="Je voornaam">
+        <button class="cta-knop" onclick="ctaKlik('${safeUrl}','${safeRoute}','${safeTitel}')">
+          ${u.ctaTekst}
+        </button>
+      </div>
+    ` : "";
+
+    inhoud.innerHTML = `
+      <div class="streep" style="background:${u.kleur}"></div>
+      <h2 class="uitkomst-titel">${u.titel}</h2>
+      <p class="uitkomst-tekst">${tekstHtml}</p>
+      ${ctaHtml}
+      <button class="opnieuw-knop" onclick="opnieuw()">Opnieuw beginnen</button>
+    `;
+  }
+
+  function wissel(fn) {
+    kaart.classList.add("vervaag");
+    setTimeout(() => { fn(); kaart.classList.remove("vervaag"); }, 160);
+  }
+
+  function ga(volgende, td) {
+    if (td) tijdsduur = td;
+
+    wissel(() => {
+      if (uitkomstenB[volgende]) {
+        const u = uitkomstenB[volgende][tijdsduur || "maanden"];
+        stap = TOTAAL;
+        toonUitkomst(u);
+        return;
+      }
+      if (uitkomsten[volgende]) {
+        stap = TOTAAL;
+        toonUitkomst(uitkomsten[volgende]);
+        return;
+      }
+      geschiedenis.push(huidig);
+      huidig = volgende;
+      stap = Math.min(stap + 1, TOTAAL - 1);
+      toonVraag(huidig);
+    });
+  }
+
+  function terug() {
+    if (geschiedenis.length === 0) return;
+    wissel(() => {
+      huidig = geschiedenis.pop();
+      stap = Math.max(stap - 1, 0);
+      toonVraag(huidig);
+    });
+  }
+
+  function opnieuw() {
+    wissel(() => {
+      huidig = "start";
+      geschiedenis = [];
+      stap = 0;
+      tijdsduur = null;
+      toonVraag(huidig);
+    });
+  }
+
+  toonVraag("start");
+</script>
+</body>
+</html>

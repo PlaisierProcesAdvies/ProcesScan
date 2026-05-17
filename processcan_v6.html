@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>De Processcan | Plaisier Proces & Advies</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script>emailjs.init("eV8chyVKUox2d4cP2");</script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: #111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 20px;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .wrap { width: 100%; max-width: 520px; }
+
+    .header { text-align: center; margin-bottom: 30px; }
+    .header-label {
+      font-size: 11px;
+      letter-spacing: 3.5px;
+      color: #f97316;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .header-titel {
+      font-family: 'Lora', serif;
+      font-size: 22px;
+      font-weight: 400;
+      color: #efefef;
+    }
+
+    .voortgang-balk {
+      height: 2px;
+      background: #1e1e1e;
+      border-radius: 2px;
+      margin-bottom: 26px;
+      overflow: hidden;
+    }
+    .voortgang-vul {
+      height: 100%;
+      background: #f97316;
+      border-radius: 2px;
+      transition: width 0.4s ease;
+      width: 0%;
+    }
+
+    .kaart {
+      background: #191919;
+      border-radius: 14px;
+      padding: 36px 32px;
+      border: 1px solid #252525;
+      transition: opacity 0.16s ease, transform 0.16s ease;
+    }
+    .kaart.vervaag { opacity: 0; transform: translateY(8px); }
+
+    .vraag-titel {
+      font-family: 'Lora', serif;
+      font-size: 20px;
+      font-weight: 400;
+      color: #efefef;
+      line-height: 1.5;
+      margin-bottom: 26px;
+    }
+
+    .optie {
+      display: block;
+      width: 100%;
+      background: transparent;
+      border: 1px solid #272727;
+      border-radius: 8px;
+      padding: 14px 18px;
+      color: #bbb;
+      font-size: 15px;
+      font-family: 'DM Sans', sans-serif;
+      text-align: left;
+      cursor: pointer;
+      line-height: 1.45;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+      margin-bottom: 9px;
+    }
+    .optie:last-of-type { margin-bottom: 0; }
+    .optie:hover { border-color: #f97316; color: #fff; background: #1d1d1d; }
+
+    .terug-knop {
+      background: none;
+      border: none;
+      color: #3a3a3a;
+      font-size: 12px;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      margin-top: 20px;
+      text-decoration: underline;
+      padding: 0;
+      display: none;
+    }
+
+    .streep { width: 30px; height: 3px; border-radius: 2px; margin-bottom: 22px; }
+
+    .uitkomst-titel {
+      font-family: 'Lora', serif;
+      font-size: 21px;
+      font-weight: 400;
+      color: #efefef;
+      line-height: 1.4;
+      margin-bottom: 16px;
+    }
+    .uitkomst-tekst {
+      font-size: 15px;
+      color: #888;
+      line-height: 1.75;
+      margin-bottom: 0;
+    }
+
+    .open-veld-wrap { margin-bottom: 12px; }
+    .open-veld-label {
+      display: block;
+      font-size: 12px;
+      color: #555;
+      font-family: 'DM Sans', sans-serif;
+      margin-bottom: 8px;
+    }
+    .open-veld {
+      width: 100%;
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: #efefef;
+      font-size: 15px;
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+      transition: border-color 0.15s;
+      resize: vertical;
+      min-height: 80px;
+      line-height: 1.5;
+    }
+    .open-veld:focus { border-color: #f97316; }
+    .open-veld::placeholder { color: #444; }
+
+    .cta-wrap { margin-top: 28px; }
+
+    .cta-knop {
+      display: block;
+      background: #f97316;
+      color: #fff;
+      padding: 14px 24px;
+      border-radius: 7px;
+      text-decoration: none;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      text-align: center;
+      width: 100%;
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .cta-knop:hover { background: #e8670a; transform: translateY(-1px); }
+
+    .opnieuw-knop {
+      background: none;
+      border: none;
+      color: #333;
+      font-size: 12px;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      margin-top: 14px;
+      text-decoration: underline;
+      padding: 0;
+      display: block;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 22px;
+      font-size: 11px;
+      color: #282828;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 480px) {
+      .kaart { padding: 28px 22px; }
+      .vraag-titel { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="header">
+    <div class="header-label">Plaisier Proces &amp; Advies</div>
+    <div class="header-titel">De Processcan</div>
+  </div>
+
+  <div class="voortgang-balk" id="voortgang-balk">
+    <div class="voortgang-vul" id="voortgang-vul"></div>
+  </div>
+
+  <div class="kaart" id="kaart">
+    <div id="inhoud"></div>
+  </div>
+
+  <div class="footer">plaisieradvies.nl</div>
+</div>
+
+<script>
+  const CONTACT_URL = 'https://www.plaisieradvies.nl/contact';
+  const TOTAAL = 4;
+
+  let huidig = "start";
+  let geschiedenis = [];
+  let stap = 0;
+  let openVeldWaarde = "";
+
+  const kaart = document.getElementById("kaart");
+  const inhoud = document.getElementById("inhoud");
+  const voortgangVul = document.getElementById("voortgang-vul");
+  const voortgangBalk = document.getElementById("voortgang-balk");
+
+  // ─── VRAGENSTRUCTUUR ───────────────────────────────────────────────────────
+
+  const vragen = {
+
+    // OPENING
+    start: {
+      vraag: "Wat bracht je hier?",
+      opties: [
+        { tekst: "Er is iets concreets aan de hand en ik weet wat het is", volgende: "p1_onderwerp" },
+        { tekst: "Er is iets aan de hand maar ik kan het niet benoemen", volgende: "p2_open" },
+        { tekst: "Geen idee eigenlijk, maar ik ben nieuwsgierig", volgende: "p3_open" },
+      ],
+    },
+
+    // ── PAD 1: Weet wat het is ────────────────────────────────────────────────
+
+    p1_onderwerp: {
+      vraag: "Waar gaat het over?",
+      opties: [
+        { tekst: "Mijn mensen. Het verloop, de betrokkenheid, of gewoon het vinden van de juiste mensen", volgende: "p1a_probleem" },
+        { tekst: "Hoe we het hier georganiseerd hebben. Of hoe ik stuur", volgende: "p1b_zekerheid" },
+        { tekst: "We investeren in digitalisering of automatisering, maar het levert niet op wat ik verwacht", volgende: "p1c_verwachting" },
+      ],
+    },
+
+    // PAD 1A: Mensen
+    p1a_probleem: {
+      vraag: "Wat is het grootste probleem?",
+      opties: [
+        { tekst: "Het vinden van goede mensen", volgende: "p1a1_kwalificaties" },
+        { tekst: "Betrokkenheid. Ze zijn er wel, maar niet meer echt", volgende: "p1a2_duur" },
+        { tekst: "Verloop. Mensen gaan weg", volgende: "p1a3_verloop" },
+      ],
+    },
+
+    // 1A1: Vinden
+    p1a1_kwalificaties: {
+      vraag: "Zijn er specifieke kwalificaties nodig?",
+      opties: [
+        { tekst: "Ja", volgende: "einde_vinden_ja" },
+        { tekst: "Nee", volgende: "einde_vinden_nee" },
+      ],
+    },
+
+    // 1A2: Betrokkenheid - duur
+    p1a2_duur: {
+      vraag: "Speelt dit al lang?",
+      opties: [
+        { tekst: "Speelt al lang", volgende: "p1a2_lang_veranderd" },
+        { tekst: "Speelt sinds kort", volgende: "p1a2_kort_veranderd" },
+        { tekst: "Speelt, maar heb niet scherp sinds wanneer", volgende: "einde_betrokkenheid_vaag" },
+      ],
+    },
+
+    p1a2_lang_veranderd: {
+      vraag: "Was er een moment waarop het veranderde?",
+      opties: [
+        { tekst: "Ja, weet nog wel wat er veranderde", volgende: "einde_betrokkenheid_weet" },
+        { tekst: "Ja, maar weet niet precies wat", volgende: "einde_betrokkenheid_vermoeden" },
+        { tekst: "Nee", volgende: "einde_betrokkenheid_weet_niet" },
+      ],
+    },
+
+    p1a2_kort_veranderd: {
+      vraag: "Weet je wat er veranderde?",
+      opties: [
+        { tekst: "Ja, ik weet precies wat er veranderde", volgende: "einde_betrokkenheid_weet" },
+        { tekst: "Ik heb een vermoeden maar weet het niet zeker", volgende: "einde_betrokkenheid_vermoeden" },
+        { tekst: "Nee, het is er gewoon ineens", volgende: "einde_betrokkenheid_ineens" },
+      ],
+    },
+
+    // 1A3: Verloop
+    p1a3_verloop: {
+      vraag: "Is dat natuurlijk verloop of niet?",
+      opties: [
+        { tekst: "Ja, natuurlijk. Steeds meer mensen gaan met pensioen", volgende: "einde_verloop_natuurlijk" },
+        { tekst: "Nee, niet natuurlijk. Het lijkt wel alsof niemand echt lang blijft zitten, en snel doorgaat naar andere opties", volgende: "einde_verloop_niet_natuurlijk" },
+      ],
+    },
+
+    // PAD 1B: Organisatie en sturing
+    p1b_zekerheid: {
+      vraag: "Hoe zeker ben je dat het klopt zoals het nu loopt?",
+      opties: [
+        { tekst: "Ik heb serieuze twijfels", volgende: "einde_org_twijfels" },
+        { tekst: "Ik heb een gevoel dat er iets niet klopt, maar ik weet niet wat", volgende: "p1b_gevoel" },
+        { tekst: "Eigenlijk denk ik dat het goed georganiseerd is", volgende: "einde_org_goed" },
+      ],
+    },
+
+    p1b_gevoel: {
+      vraag: "Is het echt alleen een gevoel?",
+      opties: [
+        { tekst: "Deels. Ik merk het ook om mij heen in de organisatie", volgende: "einde_org_signaal" },
+        { tekst: "Ja, ik kan het niet onderbouwen", volgende: "einde_org_onderbuik" },
+      ],
+    },
+
+    // PAD 1C: Digitalisering
+    p1c_verwachting: {
+      vraag: "Wat had je verwacht dat het zou opleveren?",
+      opties: [
+        { tekst: "Tijdwinst", volgende: "p1c_bron" },
+        { tekst: "Kostenbesparing", volgende: "p1c_bron" },
+        { tekst: "Minder personeel nodig", volgende: "p1c_bron" },
+        { tekst: "Een combinatie van dit alles", volgende: "p1c_bron" },
+      ],
+    },
+
+    p1c_bron: {
+      vraag: "Was het een belofte van de leverancier of een verwachting vanuit de organisatie?",
+      opties: [
+        { tekst: "Het was een belofte van de leverancier", volgende: "einde_dig_leverancier" },
+        { tekst: "Het was onze eigen verwachting", volgende: "einde_dig_eigen" },
+        { tekst: "Beide eigenlijk", volgende: "einde_dig_beide" },
+      ],
+    },
+
+    // ── PAD 2: Kan het niet benoemen (open veld) ──────────────────────────────
+    // Handled separately via toonOpenVeld()
+
+    // ── PAD 3: Nieuwsgierig (open veld) ───────────────────────────────────────
+    // Handled separately via toonOpenVeld()
+  };
+
+  // ─── UITKOMSTEN ────────────────────────────────────────────────────────────
+
+  const uitkomsten = {
+
+    // Mensen: vinden
+    einde_vinden_ja: {
+      kleur: "#f97316",
+      titel: "Het vinden van mensen met de juiste kwalificaties is lastig. Dat weet je al.",
+      tekst: "Maar waarom het moeilijk is om ze te vinden, of te houden, dat zit niet altijd waar je denkt.\n\nIk kijk daar graag even naar. Geen pitch, gewoon een gesprek.",
+    },
+    einde_vinden_nee: {
+      kleur: "#f97316",
+      titel: "Goede mensen vinden zonder specifieke eisen is nog altijd een uitdaging.",
+      tekst: "Maar de oorzaak ligt niet altijd buiten je organisatie.\n\nIk spar daar graag even over.",
+    },
+
+    // Mensen: betrokkenheid
+    einde_betrokkenheid_weet: {
+      kleur: "#f97316",
+      titel: "Je hebt al een aanknopingspunt.",
+      tekst: "Maar of dat ook de oorzaak is, dat is een andere vraag.\n\nDat spar ik graag met je door.",
+    },
+    einde_betrokkenheid_vermoeden: {
+      kleur: "#f97316",
+      titel: "Een vermoeden is een goed startpunt.",
+      tekst: "Maar vermoedens zijn aannames totdat je ze toetst.\n\nDaar kijk ik graag naar.",
+    },
+    einde_betrokkenheid_weet_niet: {
+      kleur: "#ef4444",
+      titel: "Als niemand meer weet wanneer het begon, is het onderdeel geworden van hoe het hier werkt.",
+      tekst: "Dat is het moment om van buiten naar binnen te kijken.",
+    },
+    einde_betrokkenheid_ineens: {
+      kleur: "#f97316",
+      titel: "Als het er ineens is zonder duidelijke aanleiding, zit de oorzaak meestal al langer onder de oppervlakte.",
+      tekst: "Dat is precies waar ik naar kijk.",
+    },
+    einde_betrokkenheid_vaag: {
+      kleur: "#ef4444",
+      titel: "Als je niet meer weet sinds wanneer het speelt, is het onderdeel geworden van hoe het hier werkt.",
+      tekst: "Dat is het moment om van buiten naar binnen te kijken.\n\nTijd om actie te ondernemen. Laten we een eerste gesprek inplannen.",
+    },
+
+    // Mensen: verloop
+    einde_verloop_natuurlijk: {
+      kleur: "#f97316",
+      titel: "Natuurlijk verloop is begrijpelijk. Maar het vraagt wel iets van je organisatie.",
+      tekst: "Kennis die vertrekt zonder overgedragen te zijn, is een risico dat je pas ziet als het te laat is.\n\nIk kijk daar graag naar.",
+    },
+    einde_verloop_niet_natuurlijk: {
+      kleur: "#ef4444",
+      titel: "Als niemand echt lang blijft zitten, zit er iets onder.",
+      tekst: "Dat antwoord zit zelden in een exitgesprek.\n\nWanneer heb je er voor het laatst echt bij stilgestaan?",
+    },
+
+    // Organisatie en sturing
+    einde_org_twijfels: {
+      kleur: "#ef4444",
+      titel: "Twijfel over hoe je stuurt of hoe het georganiseerd is, is zelden ongegrond.",
+      tekst: "Dat is een gesprek waard.",
+    },
+    einde_org_signaal: {
+      kleur: "#ef4444",
+      titel: "Een gevoel dat je ook om je heen ziet, is geen gevoel meer. Het is een signaal.",
+      tekst: "De vraag is wat het signaleert.\n\nDat kijk ik graag met je naar.",
+    },
+    einde_org_onderbuik: {
+      kleur: "#f97316",
+      titel: "Een gevoel dat je niet kunt onderbouwen maar toch aanhoudt, is zelden zonder reden.",
+      tekst: "Dat is precies het moment om van buiten naar binnen te kijken.",
+    },
+    einde_org_goed: {
+      kleur: "#f97316",
+      titel: "Als het goed georganiseerd is, waarom deed je de scan dan?",
+      tekst: "Dat is geen verwijt. Het is een eerlijke vraag.\n\nEn het antwoord daarop is vaak interessanter dan je verwacht.\n\nIk spar daar graag over.",
+    },
+
+    // Digitalisering
+    einde_dig_leverancier: {
+      kleur: "#f97316",
+      titel: "Een leverancier levert wat hij belooft.",
+      tekst: "Maar of de juiste vraag gesteld werd voor de investering, dat is een andere vraag.\n\nDaar kijk ik graag naar.",
+    },
+    einde_dig_eigen: {
+      kleur: "#f97316",
+      titel: "Een verwachting is een aanname totdat je hem toetst.",
+      tekst: "Als het niet oplevert wat je dacht, zit de oorzaak vaak in wat er aangenomen werd voordat de beslissing viel.\n\nDat breng ik scherp in kaart.",
+    },
+    einde_dig_beide: {
+      kleur: "#ef4444",
+      titel: "Als zowel de verwachting als de belofte niet klopten, zijn er twee lagen die niet op feiten waren gebouwd.",
+      tekst: "Dat vraagt een eerlijk gesprek.",
+    },
+
+    // Pad 2: open veld uitkomst
+    einde_pad2: {
+      kleur: "#f97316",
+      titel: "Wat je net opschreef is precies waar ik mee begin.",
+      tekst: "Niet om het te bevestigen. Maar om te kijken of het klopt.",
+    },
+
+    // Pad 3: nieuwsgierig
+    einde_pad3: {
+      kleur: "#f97316",
+      titel: "Nieuwsgierigheid is een goed begin.",
+      tekst: "Bel of mail me gerust. Geen agenda, gewoon een gesprek.",
+    },
+  };
+
+  // ─── RENDERING ─────────────────────────────────────────────────────────────
+
+  function toonVraag(id) {
+    const v = vragen[id];
+    if (!v) return;
+
+    inhoud.innerHTML = `
+      <h2 class="vraag-titel">${v.vraag}</h2>
+      <div>
+        ${v.opties.map(opt =>
+          `<button class="optie" onclick="ga('${opt.volgende}')">${opt.tekst}</button>`
+        ).join("")}
+      </div>
+      <button class="terug-knop" id="terug-knop" onclick="terug()" style="display:${geschiedenis.length > 0 ? 'block' : 'none'}">Vorige vraag</button>
+    `;
+
+    voortgangBalk.style.display = "block";
+    voortgangVul.style.width = (stap / TOTAAL * 100) + "%";
+    kaart.style.borderColor = "#252525";
+  }
+
+  function toonOpenVeld(vraagTekst, uitkomstId, placeholder) {
+    inhoud.innerHTML = `
+      <h2 class="vraag-titel">${vraagTekst}</h2>
+      <div class="open-veld-wrap">
+        <textarea class="open-veld" id="open-invoer" placeholder="${placeholder}"></textarea>
+      </div>
+      <button class="optie" onclick="verwerkOpenVeld('${uitkomstId}')" style="margin-top:4px;">Verder</button>
+      <button class="terug-knop" id="terug-knop" onclick="terug()" style="display:${geschiedenis.length > 0 ? 'block' : 'none'}">Vorige vraag</button>
+    `;
+
+    voortgangBalk.style.display = "block";
+    voortgangVul.style.width = (stap / TOTAAL * 100) + "%";
+    kaart.style.borderColor = "#252525";
+  }
+
+  function verwerkOpenVeld(uitkomstId) {
+    const el = document.getElementById("open-invoer");
+    openVeldWaarde = el ? el.value.trim() : "";
+    wissel(() => {
+      stap = TOTAAL;
+      toonUitkomst(uitkomsten[uitkomstId]);
+    });
+  }
+
+  function toonUitkomst(u) {
+    voortgangBalk.style.display = "none";
+    kaart.style.borderColor = u.kleur + "33";
+
+    const tekstHtml = u.tekst.replace(/\n\n/g, '<br><br>');
+
+    inhoud.innerHTML = `
+      <div class="streep" style="background:${u.kleur}"></div>
+      <h2 class="uitkomst-titel">${u.titel}</h2>
+      <p class="uitkomst-tekst">${tekstHtml}</p>
+      <div class="cta-wrap">
+        <a class="cta-knop" href="${CONTACT_URL}" target="_blank" onclick="verstuurEmail('${u.titel.replace(/'/g,"\\'")}')">Plan een vrijblijvend gesprek</a>
+      </div>
+      <button class="opnieuw-knop" onclick="opnieuw()">Opnieuw beginnen</button>
+    `;
+  }
+
+  // ─── NAVIGATIE ─────────────────────────────────────────────────────────────
+
+  function ga(volgende) {
+    // Sla open veld waarde op als die er nog is
+    const el = document.getElementById("open-invoer");
+    if (el) openVeldWaarde = el.value.trim();
+
+    wissel(() => {
+      // Uitkomst?
+      if (uitkomsten[volgende]) {
+        geschiedenis.push(huidig);
+        huidig = volgende;
+        stap = TOTAAL;
+        toonUitkomst(uitkomsten[volgende]);
+        return;
+      }
+
+      // Open veld paden
+      if (volgende === "p2_open") {
+        geschiedenis.push(huidig);
+        huidig = volgende;
+        stap = Math.min(stap + 1, TOTAAL - 1);
+        toonOpenVeld(
+          "Waar wijst je gevoel je op? Schrijf op wat er als eerste in je opkomt.",
+          "einde_pad2",
+          "Schrijf hier wat er in je opkomt..."
+        );
+        return;
+      }
+
+      if (volgende === "p3_open") {
+        geschiedenis.push(huidig);
+        huidig = volgende;
+        stap = Math.min(stap + 1, TOTAAL - 1);
+        toonOpenVeld(
+          "Waar ben je nieuwsgierig naar?",
+          "einde_pad3",
+          "Schrijf hier wat er in je opkomt..."
+        );
+        return;
+      }
+
+      // Volgende vraag
+      if (vragen[volgende]) {
+        geschiedenis.push(huidig);
+        huidig = volgende;
+        stap = Math.min(stap + 1, TOTAAL - 1);
+        toonVraag(huidig);
+        return;
+      }
+    });
+  }
+
+  function terug() {
+    if (geschiedenis.length === 0) return;
+    wissel(() => {
+      huidig = geschiedenis.pop();
+      stap = Math.max(stap - 1, 0);
+
+      if (huidig === "p2_open") {
+        toonOpenVeld(
+          "Waar wijst je gevoel je op? Schrijf op wat er als eerste in je opkomt.",
+          "einde_pad2",
+          "Schrijf hier wat er in je opkomt..."
+        );
+      } else if (huidig === "p3_open") {
+        toonOpenVeld(
+          "Waar ben je nieuwsgierig naar?",
+          "einde_pad3",
+          "Schrijf hier wat er in je opkomt..."
+        );
+      } else if (uitkomsten[huidig]) {
+        toonUitkomst(uitkomsten[huidig]);
+      } else {
+        toonVraag(huidig);
+      }
+    });
+  }
+
+  function opnieuw() {
+    wissel(() => {
+      huidig = "start";
+      geschiedenis = [];
+      stap = 0;
+      openVeldWaarde = "";
+      toonVraag(huidig);
+    });
+  }
+
+  function wissel(fn) {
+    kaart.classList.add("vervaag");
+    setTimeout(() => { fn(); kaart.classList.remove("vervaag"); }, 160);
+  }
+
+  function verstuurEmail(titel) {
+    emailjs.send("service_qrt788c", "template_07nyhhf", {
+      naam: "scan-bezoeker",
+      route: huidig,
+      uitkomst_titel: titel,
+      open_veld: openVeldWaarde || "niet ingevuld",
+      tijdstip: new Date().toLocaleString("nl-NL"),
+    }).catch(() => {});
+  }
+
+  // Start
+  toonVraag("start");
+</script>
+</body>
+</html>
